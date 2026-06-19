@@ -35,9 +35,24 @@ METHOD_MAP = {
 }
 
 
-def process_end_time(df: pd.DataFrame) -> pd.DataFrame:
+def process_time_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    - end_time  : Unix timestamp (int) → pd.Timestamp UTC
+    - start_time: trích từ PGN header [UTCDate] + [StartTime] → pd.Timestamp UTC
+    """
     df = df.copy()
+
     df["end_time"] = pd.to_datetime(df["end_time"], unit="s")
+
+    def _parse_start(pgn: str) -> pd.Timestamp | None:
+        date_m = re.search(r'\[UTCDate "(\d{4}\.\d{2}\.\d{2})"\]', str(pgn))
+        time_m = re.search(r'\[StartTime "(\d{2}:\d{2}:\d{2})"\]', str(pgn))
+        if date_m and time_m:
+            return pd.Timestamp(f"{date_m.group(1).replace('.', '-')} {time_m.group(1)}")
+        return None
+
+    df["start_time"] = df["pgn"].apply(_parse_start)
+
     df = df.sort_values("end_time").reset_index(drop=True)
     return df
 
