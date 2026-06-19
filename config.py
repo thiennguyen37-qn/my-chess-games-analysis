@@ -6,5 +6,5 @@ HEADERS = {
 
 BASE_URL = "https://api.chess.com/pub/player"
 
-RAW_DATA_DIR  = "raw"
+RAW_DATA_DIR  = "data/raw"
 RAW_DATA_PATH = f"{RAW_DATA_DIR}/{USERNAME}_rapid_games.csv"
