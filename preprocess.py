@@ -83,10 +83,20 @@ def count_moves(pgn: str) -> int | float:
         return np.nan
 
 
-def avg_time_per_move(pgn: str) -> float:
+def avg_time_per_move(pgn: str, player: str = USERNAME) -> float:
+    # Increment (giây) từ header: "900+10" → 10, "600" → 0
+    tc_match = re.search(r'\[TimeControl "(\d+)(?:\+(\d+))?"\]', pgn)
+    increment = int(tc_match.group(2)) if tc_match and tc_match.group(2) else 0
+
+    # Clock xen kẽ [W₁, B₁, W₂, B₂, ...]: offset 0 nếu player cầm trắng, 1 nếu cầm đen
+    white_match = re.search(r'\[White "([^"]+)"\]', pgn)
+    offset = 0 if white_match and white_match.group(1).lower() == player.lower() else 1
+
     clocks = re.findall(r'\[%clk (\d+):(\d+):(\d+\.?\d*)\]', pgn)
     times = [int(h) * 3600 + int(m) * 60 + float(s) for h, m, s in clocks]
-    diffs = [times[i] - times[i + 2] for i in range(0, len(times) - 2, 2)]
+
+    # clock giảm theo lượng suy nghĩ nhưng được cộng lại increment mỗi nước
+    diffs = [times[i] - times[i + 2] + increment for i in range(offset, len(times) - 2, 2)]
     return np.mean(diffs) if diffs else np.nan
 
 
