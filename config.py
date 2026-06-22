@@ -8,3 +8,6 @@ BASE_URL = "https://api.chess.com/pub/player"
 
 RAW_DATA_DIR  = "data/raw"
 RAW_DATA_PATH = f"{RAW_DATA_DIR}/{USERNAME}_rapid_games.csv"
+
+PROCESSED_DATA_DIR  = "data/processed"
+PROCESSED_DATA_PATH = f"{PROCESSED_DATA_DIR}/{USERNAME}_rapid_games_processed_1.csv"
