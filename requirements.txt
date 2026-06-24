@@ -9,4 +9,3 @@ seaborn==0.13.2
 chess==1.11.2
 jupyter==1.1.1
 ipykernel==7.3.0
-shap==0.47.2
